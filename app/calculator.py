@@ -6,6 +6,7 @@ def train_lstm_model(X, y, epochs=10, batch_size=32):
     """
     Entraîne un modèle LSTM.
     """
+    # Création du modèle LSTM
     model = Sequential()
     model.add(LSTM(units=50, return_sequences=True, input_shape=(X.shape[1], 1)))
     model.add(LSTM(units=50))
@@ -18,14 +19,17 @@ def predict_future_values(model, scaler, data, future_days, look_back=60):
     """
     Prédit les valeurs futures en utilisant le modèle LSTM.
     """
+    # Mise à l'échelle des données historiques
     scaled_data = scaler.transform(data[['close']].values)
     last_sequence = scaled_data[-look_back:]
     predictions = []
 
     for _ in range(future_days):
+        # Prédiction pour le prochain jour
         pred = model.predict(last_sequence.reshape(1, look_back, 1))
         predictions.append(pred[0, 0])
         last_sequence = np.append(last_sequence[1:], pred)
 
+    # Inversion de l'échelle des prédictions
     predictions = scaler.inverse_transform(np.array(predictions).reshape(-1, 1)).flatten()
     return predictions

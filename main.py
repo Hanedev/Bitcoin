@@ -13,11 +13,13 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Charger les données
 st.title("Simulateur et prédictions de gains Bitcoin")
 try:
+    # Récupère les données historiques depuis une API
     bitcoin_data = fetch_bitcoin_data()
     if bitcoin_data.empty:
         st.error("Les données du Bitcoin n'ont pas pu être récupérées.")
         st.stop()
 except Exception as e:
+    # Gestion des erreurs de récupération des données
     logging.error(f"Erreur lors de la récupération des données: {e}")
     st.error("Une erreur s'est produite lors de la récupération des données.")
     st.stop()
@@ -55,5 +57,6 @@ if st.sidebar.button("Lancer les prédictions"):
         st.pyplot(plt)
 
     except Exception as e:
+        # Gestion des erreurs lors des prédictions
         logging.error(f"Erreur lors des prédictions: {e}")
         st.error("Une erreur s'est produite lors des prédictions. Veuillez réessayer.")

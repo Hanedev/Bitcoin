@@ -28,6 +28,7 @@ def fetch_bitcoin_data():
         all_data.extend(data)
         start_time = data[-1][6] + 1  # Prochain start_time après le dernier close_time
 
+    # Conversion des données en DataFrame
     df = pd.DataFrame(all_data, columns=[
         "timestamp", "open", "high", "low", "close", "volume",
         "close_time", "quote_asset_volume", "trades", "taker_buy_base",
@@ -47,9 +48,9 @@ def prepare_data_for_lstm(data, look_back=60):
 
     X, y = [], []
     for i in range(look_back, len(scaled_data)):
-        X.append(scaled_data[i-look_back:i, 0])
-        y.append(scaled_data[i, 0])
+        X.append(scaled_data[i-look_back:i, 0]) # Séquences historiques
+        y.append(scaled_data[i, 0]) # Valeurs cibles
     
     X, y = np.array(X), np.array(y)
-    X = np.reshape(X, (X.shape[0], X.shape[1], 1))
+    X = np.reshape(X, (X.shape[0], X.shape[1], 1)) # Reshape pour LSTM
     return X, y, scaler
