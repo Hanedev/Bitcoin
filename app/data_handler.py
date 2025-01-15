@@ -1,5 +1,7 @@
 import requests
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+import numpy as np
 
 def fetch_bitcoin_data():
     """
@@ -18,6 +20,8 @@ def fetch_bitcoin_data():
             "limit": 1000
         }
         response = requests.get(url, params=params)
+        if response.status_code != 200:
+            raise ConnectionError(f"Erreur lors de la récupération des données : {response.text}")
         data = response.json()
         if not data:
             break
@@ -38,9 +42,6 @@ def prepare_data_for_lstm(data, look_back=60):
     """
     Prépare les données pour un modèle LSTM.
     """
-    from sklearn.preprocessing import MinMaxScaler
-    import numpy as np
-
     scaler = MinMaxScaler(feature_range=(0, 1))
     scaled_data = scaler.fit_transform(data[['close']].values)
 
